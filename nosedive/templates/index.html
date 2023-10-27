@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load static %}
+<script src="{% static 'js/main.js' %}" defer></script>
+<!-- <script src="{% static 'css/style.css' %}"></script> -->
+
+{% block title %}NoseDive{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<h2>Hi! {{user.first_name}} {{ user.last_name}}</h2>
+<h2><img src="{% static 'images/1.png' %}" width="35" height="35" >  Rating: {{user.profile.rating|floatformat:1}}</h2>
+{% comment %} <a href="/uploadFile"> upload file </a> {% endcomment %}
+{% else %}
+<h3>You are not logged in</h3>
+{% endif %}
+<br>
+<ul>
+    {%for person in users%}
+    {% if person != user and person != "admin" %}
+    <li>
+        <p>
+            <h3 class="no-selection">
+                <img src="{% static 'images/1.png' %}" width="35" height="35" >
+                 {{person}}   {{person.profile.rating|floatformat:1}} 
+                </h3>
+
+
+            <div class="star-row" role="rater" rated_user="{{person}}">
+
+                {% for i in '01234'|make_list %}
+
+
+
+                <div class="star" data-value="{{ i }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 51 48">
+                        <path d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z" />
+                    </svg>
+                </div>
+                {% endfor %}
+                <form class="hidden" action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    {{form}}
+                </form>
+
+            </div>
+
+
+        </p>
+    </li>
+    <br>
+    {% endif %}
+    {% endfor %}
+
+
+    {% endblock %}
